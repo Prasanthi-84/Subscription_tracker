@@ -21,15 +21,19 @@ const app=express();
  app.use(cookieParser())
 
  app.use(cors({
+    //only allow req from this origin
     origin:["http://localhost:3000"],
     methods:["GET","POST","PUT","DELETE"],
     allowedHeaders:["Content-Type","Authorization"],
+    //enable sending cookies
     credentials:true,
  }))
+
+ //bot detection and more
  app.use(arcjetMiddleware)
 
 
-
+//endpoints
 app.use('/api/v1/auth',authRouter)
 app.use('/api/v1/users',userRouter)
 app.use('/api/v1/subscriptions',subscriptionRouter)
@@ -40,6 +44,8 @@ app.get('/',(req,res)=>{
     res.send('Welcome to the Subscription Tracker API!')
 })
 
+
+//handle errors
  app.use(errorMiddleware); 
 
 
