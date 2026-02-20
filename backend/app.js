@@ -22,7 +22,9 @@ const app=express();
 
  app.use(cors({
     //only allow req from this origin
-    origin:["http://localhost:3000"],
+    origin: process.env.NODE_ENV === 'production' 
+        ? [process.env.FRONTEND_URL, "https://subscription-tracker-nusknfotv-prasanthi-84s-projects.vercel.app"]
+        : ["http://localhost:3000"],
     methods:["GET","POST","PUT","DELETE"],
     allowedHeaders:["Content-Type","Authorization"],
     //enable sending cookies
@@ -49,11 +51,14 @@ app.get('/',(req,res)=>{
  app.use(errorMiddleware); 
 
 
-app.listen(PORT,async()=>{
-    console.log(`Subscription Tracker API running on http://localhost:${PORT}`)
+// Connect to database
+await connectToDatabase();
 
-   await connectToDatabase();
-})
-
+// Only start server if not in serverless environment (Vercel)
+if (process.env.VERCEL !== '1') {
+    app.listen(PORT, () => {
+        console.log(`Subscription Tracker API running on http://localhost:${PORT}`);
+    });
+}
 
 export default app;
