@@ -44,9 +44,15 @@ export default function SignupPage(){
 
     console.log('Response status:', res.status);
     
-    // try parse JSON, but fallback to text
+    // Parse response
     let data;
-    try { data = await res.json(); } catch (err) { data = { message: await res.text() }; }
+    const contentType = res.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      data = await res.json();
+    } else {
+      const text = await res.text();
+      data = { message: text };
+    }
     
     console.log('Response data:', data);
 

@@ -30,7 +30,17 @@ export default function SignInPage(){
                })
                
                console.log('Response status:', res.status);
-               const data=await res.json();
+               
+               // Parse response
+               let data;
+               const contentType = res.headers.get('content-type');
+               if (contentType && contentType.includes('application/json')) {
+                 data = await res.json();
+               } else {
+                 const text = await res.text();
+                 data = { message: text };
+               }
+               
                console.log("Login response:", data);
 
 
