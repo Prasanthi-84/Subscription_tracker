@@ -31,6 +31,9 @@ export default function SignupPage(){
         setLoading(true)
     
    try{
+    console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
+    console.log('Signup data:', formData);
+    
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/sign-up`, { 
      method:"POST",
       headers:{
@@ -39,10 +42,13 @@ export default function SignupPage(){
       body:JSON.stringify(formData)
     })
 
+    console.log('Response status:', res.status);
+    
     // try parse JSON, but fallback to text
     let data;
     try { data = await res.json(); } catch (err) { data = { message: await res.text() }; }
-  
+    
+    console.log('Response data:', data);
 
      if(res.ok){
         setSuccess("Signup successfull! Redirecting to login...")
@@ -54,7 +60,8 @@ export default function SignupPage(){
 
    }
    catch(err){
-    setError("Something went wrong. Please try again.")
+    console.error('Signup error:', err);
+    setError(`Something went wrong: ${err.message}`);
    }
    finally{
     setLoading(false)

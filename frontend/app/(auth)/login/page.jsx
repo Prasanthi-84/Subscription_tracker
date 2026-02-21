@@ -16,6 +16,9 @@ export default function SignInPage(){
             e.preventDefault();
 
             try{
+               console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
+               console.log('Login data:', {email, password: '***'});
+               
                const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/sign-in`,{
                 
                 method:"POST",
@@ -25,8 +28,10 @@ export default function SignInPage(){
                 
                 body:JSON.stringify({email,password})
                })
+               
+               console.log('Response status:', res.status);
                const data=await res.json();
-             //  console.log("Login response:", data);
+               console.log("Login response:", data);
 
 
                if(!res.ok){
@@ -36,7 +41,7 @@ export default function SignInPage(){
                 const token=data?.data?.token
                 if(token){
                     localStorage.setItem("token",token)
-                   // console.log("Token saved:",localStorage.getItem("token"));
+                    console.log("Token saved:",localStorage.getItem("token"));
                     router.push('/dashboard')
                 }
                 else {
@@ -47,7 +52,7 @@ export default function SignInPage(){
             }
             catch(err){
                 console.error("Login error:", err)
-                setError("Something went wrong.Please try again later")
+                setError(`Something went wrong: ${err.message}`)
             }
      }
  
