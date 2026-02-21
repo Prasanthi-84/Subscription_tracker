@@ -15,7 +15,7 @@ const nextConfig = {
               default-src 'self';
               script-src 'self' 'unsafe-eval' 'unsafe-inline';
               style-src 'self' 'unsafe-inline';
-              font-src 'self' https://fonts.gstatic.com;
+              font-src 'self' https://fonts.gstatic.com data:;
               img-src 'self' data:;
               connect-src 'self' ${apiOrigin}
             `.replace(/\s{2,}/g, " "),
