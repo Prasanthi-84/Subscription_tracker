@@ -22,9 +22,27 @@ const app=express();
 
  app.use(cors({
     //only allow req from this origin
-    origin: process.env.NODE_ENV === 'production' 
-        ? [process.env.FRONTEND_URL, "https://subscription-tracker-nusknfotv-prasanthi-84s-projects.vercel.app"]
-        : ["http://localhost:3000"],
+    origin: (origin, callback) => {
+        const allowedOrigins = process.env.NODE_ENV === 'production'
+            ? [process.env.FRONTEND_URL, /\.vercel\.app$/]
+            : ["http://localhost:3000"];
+        
+        // Allow requests with no origin (like mobile apps or Postman)
+        if (!origin) return callback(null, true);
+        
+        // Check if origin matches any allowed pattern
+        const isAllowed = allowedOrigins.some(allowed => {
+            if (typeof allowed === 'string') return allowed === origin;
+            if (allowed instanceof RegExp) return allowed.test(origin);
+            return false;
+        });
+        
+        if (isAllowed) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods:["GET","POST","PUT","DELETE"],
     allowedHeaders:["Content-Type","Authorization"],
     //enable sending cookies
