@@ -5,20 +5,22 @@ const nextConfig = {
     // Extract the origin (scheme + host) from the API URL
     const apiOrigin = new URL(apiUrl).origin;
 
+    const csp = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com data: blob:",
+      "img-src 'self' data: blob:",
+      `connect-src 'self' ${apiOrigin}`,
+    ].join("; ");
+
     return [
       {
-        source: "/(.*)",
+        source: "/:path*",
         headers: [
           {
             key: "Content-Security-Policy",
-            value: `
-              default-src 'self';
-              script-src 'self' 'unsafe-eval' 'unsafe-inline';
-              style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-              font-src 'self' https://fonts.gstatic.com data: blob:;
-              img-src 'self' data: blob:;
-              connect-src 'self' ${apiOrigin};
-            `.replace(/\s{2,}/g, " ").trim(),
+            value: csp,
           },
         ],
       },
