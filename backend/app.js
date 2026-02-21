@@ -23,9 +23,17 @@ const app=express();
  app.use(cors({
     //only allow req from this origin
     origin: (origin, callback) => {
-        const allowedOrigins = process.env.NODE_ENV === 'production'
-            ? [process.env.FRONTEND_URL, /\.vercel\.app$/]
-            : ["http://localhost:3000"];
+        // Temporarily allow all Vercel domains and localhost for testing
+        const allowedOrigins = [
+            /\.vercel\.app$/,
+            "http://localhost:3000",
+            "https://localhost:3000"
+        ];
+        
+        // Also allow specific frontend URL if set
+        if (process.env.FRONTEND_URL) {
+            allowedOrigins.push(process.env.FRONTEND_URL);
+        }
         
         // Allow requests with no origin (like mobile apps or Postman)
         if (!origin) return callback(null, true);
@@ -40,7 +48,8 @@ const app=express();
         if (isAllowed) {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            console.error('CORS blocked origin:', origin);
+            callback(new Error(`Not allowed by CORS: ${origin}`));
         }
     },
     methods:["GET","POST","PUT","DELETE"],
