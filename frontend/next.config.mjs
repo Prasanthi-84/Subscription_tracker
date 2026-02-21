@@ -17,8 +17,8 @@ const nextConfig = {
               style-src 'self' 'unsafe-inline';
               font-src 'self' https://fonts.gstatic.com data:;
               img-src 'self' data:;
-              connect-src 'self' ${apiOrigin}
-            `.replace(/\s{2,}/g, " "),
+              connect-src 'self' ${apiOrigin};
+            `.replace(/\s{2,}/g, " ").trim(),
           },
         ],
       },
